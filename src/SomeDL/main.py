@@ -10,6 +10,7 @@ from SomeDL.core.cli_parser import parseCliArgs
 from SomeDL.core.download_report import generateDownloadReport
 from SomeDL.core.processor import process_song_list_concurrent
 from SomeDL.core.extra import import_songs, update_storage_template, update_metadata
+from SomeDL.core.m3u import generate_m3u
 from SomeDL.webui.server import start_webui
 
 
@@ -132,6 +133,21 @@ def main():
         generateDownloadReport(metadata_success_list, failed_list, already_downloaded_list)
     else:
         console.debug("No Download Report generated")
+
+    # === M3U playlist generation ===
+    if config["download"]["m3u"]:
+        # Derive a playlist name from the input (playlist title stored on the first song, or user-supplied name)
+        if config["download"]["m3u_name"]:
+            playlist_name = config["download"]["m3u_name"]
+        else:
+            # Try to pick a sensible name from the song list metadata
+            first_song = songs_list[0] if songs_list else {}
+            playlist_name = (
+                first_song.get("playlist_title")
+                or first_song.get("album_name")
+                or "playlist"
+            )
+        generate_m3u(songs_list, metadata_success_list, already_downloaded_list, playlist_name)
 
 
     # === End timer === TODO add full summary of how many downloaded etc

@@ -57,6 +57,8 @@ default_config = {
         "include_other_artists": (False, bool, None),
         "sync_files": ([], list, None),
         "range": ([], list, None),
+        "m3u": (False, bool, None),
+        "m3u_name": ("", str, None),
     },
     "api": {
         "deezer": (True, bool, None),

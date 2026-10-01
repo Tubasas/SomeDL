@@ -144,6 +144,14 @@ NEW:
         action="store_true",
         help="Applies only to artist/channel URLs: also download albums with a different album artist."
     )
+    download_group.add_argument(
+        "--m3u",
+        type=str,
+        nargs="?",
+        const="",
+        metavar="NAME",
+        help="After downloading, generate an M3U playlist file that preserves the original YouTube Music playlist order. Optionally provide a custom playlist name (default: the playlist title or 'playlist').",
+    )
 
 
     # === Logging ===
@@ -347,6 +355,11 @@ NEW:
         config["download"]["include_singles"] = True
     if args.include_other_artists:
         config["download"]["include_other_artists"] = True
+
+    if args.m3u is not None:
+        config["download"]["m3u"] = True
+        if args.m3u:  # non-empty string provided as NAME
+            config["download"]["m3u_name"] = args.m3u
 
 
     if args.new_sync_file:
